@@ -13,7 +13,14 @@ num=`find out -name "out*" -type f | awk -F'[_\.]' '{print $2}' | sort -n -r | h
 
 while true
 do
-    curl -s -u lengstrom:$ghat "https://api.github.com/repositories?since=$num" | jq '[.[] | {"id": .id, "name": .full_name, "tree": .trees_url, "fork":.fork}]' > out/out_$num.json
+    res=`curl -s -u lengstrom:$ghat "https://api.github.com/repositories?since=$num"`
+    if [[ $res == *"rate limit exceeded for"* ]];
+    then
+        
+        continue
+    fi
+    
+     jq '[.[] | {"id": .id, "name": .full_name, "tree": .trees_url, "fork":.fork}]' > out/out_$num.json
     num=`cat out/out_$num.json | jq '.[-1] | .id'`
     if [ $(($num)) -gt $((49615800)) ]
     then
