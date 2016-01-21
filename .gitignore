@@ -2,6 +2,10 @@
 gh_tokens
 __pycache__/
 *.py[cod]
+out2.zip
+concat
+out2
+push_all_tokens.sh
 
 # C extensions
 *.so

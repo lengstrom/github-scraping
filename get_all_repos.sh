@@ -22,11 +22,9 @@ reset_script() {
     exit
 }
 
-num=`find out -name "out*" -type f | awk -F'[_\.]' '{print $2}' | awk -v mini=$min '{if($1==$1+0 && $1>mini)print $1}' | awk -v maxi=$max '{if($1==$1+0 && $1<maxi)print $1}' | sort -r -n | head -n 1`
-
-if [ "g$num" = "g" ];
-then
-    num=$min
+num=`find out2 -name "out2*" -type f | awk -F'[_\.]' '{print $2}' | awk -v mini=$min '{if($1==$1+0 && $1>mini)print $1}' | awk -v maxi=$max '{if($1==$1+0 && $1<maxi)print $1}' | sort -r -n | head -n 1`
+if [ "g$num" = "g" ]; then
+    num=$(($min))
 fi
 
 echo "$max, $min, $num"
@@ -55,7 +53,7 @@ do
     then
         reset_script
         stack_pop $stackname ghkey
-        num=`find out -name "out*" -type f | awk -F'[_\.]' '{print $2}' | awk -v mini=$min '{if($1==$1+0 && $1>mini)print $1}' | awk -v maxi=$max '{if($1==$1+0 && $1<maxi)print $1}' | sort -r -n | head -n 1`
+        num=`find out2 -name "out2*" -type f | awk -F'[_\.]' '{print $2}' | awk -v mini=$min '{if($1==$1+0 && $1>mini)print $1}' | awk -v maxi=$max '{if($1==$1+0 && $1<maxi)print $1}' | sort -r -n | head -n 1`
         echo "Resetting: 1"
         num=$(($num+1))
         continue
@@ -67,26 +65,26 @@ do
     fi
     
     {
-        if [ -f out/out_$num.json ]; then
+        if [ -f out2/out2_$num.json ]; then
             echo "File already exists!"
             nn=$(($nn + 1))
-            if [ $(($nn)) -gt 2 ];
+            if [ $(($nn)) -gt 3 ];
             then
                 reset_script
             fi
             
-            num=`find out -name "out*" -type f | awk -F'[_\.]' '{print $2}' | awk -v mini=$min '{if($1==$1+0 && $1>mini)print $1}' | awk -v maxi=$max '{if($1==$1+0 && $1<maxi)print $1}' | sort -r -n | head -n 1`
+            num=`find out2 -name "out2*" -type f | awk -F'[_\.]' '{print $2}' | awk -v mini=$min '{if($1==$1+0 && $1>mini)print $1}' | awk -v maxi=$max '{if($1==$1+0 && $1<maxi)print $1}' | sort -r -n | head -n 1`
             echo "Resetting: 2"
             num=$(($num+1))
         else
             nn=$((0))
         fi
-        echo $res | jq '[.[] | {"id": .id, "name": .full_name, "tree": .trees_url, "fork":.fork}]' > out/out_$num.json
-        if [ ! -f out/out_$num.json ]; then
+        echo $res | jq '[.[] | {"id": .id, "name": .full_name, "tree": .trees_url, "fork":.fork}]' > out2/out2_$num.json
+        if [ ! -f out2/out2_$num.json ]; then
             echo "File not found!"
         fi
         echo "finished ${num}"
-        num=`cat out/out_$num.json | jq '.[-1] | .id'`
+        num=`cat out2/out2_$num.json | jq '.[-1] | .id'`
         if [ $(($num)) -gt $((49615800)) ]
         then
             break
@@ -95,7 +93,7 @@ do
         reset_script
         echo "Failed!"
         stack_pop $stackname ghkey
-        num=`find out -name "out*" -type f | awk -F'[_\.]' '{print $2}' | awk -v mini=$min '{if($1==$1+0 && $1>mini)print $1}' | awk -v maxi=$max '{if($1==$1+0 && $1<maxi)print $1}' | sort -r -n | head -n 1`
+        num=`find out2 -name "out2*" -type f | awk -F'[_\.]' '{print $2}' | awk -v mini=$min '{if($1==$1+0 && $1>mini)print $1}' | awk -v maxi=$max '{if($1==$1+0 && $1<maxi)print $1}' | sort -r -n | head -n 1`
         echo "Resetting: 3"
         num=$(($num+1))
     }
